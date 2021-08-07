@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Word Prediction</title>
+
+	<script>
+		function affixPrediction(word) {
+			sentenceInput = document.querySelector('#sentence');
+			currentWords = sentenceInput.value.trim().split(" ");
+			currentWords[currentWords.length - 1] = word;
+			newValue = "";
+			currentWords.map((word) => newValue += word + " ");
+			sentenceInput.value = newValue;
+			sentenceInput.focus();
+		}
+	</script>
+
+	<style>
+		table * {
+			font-size: 24px;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Auto-Complete App</h1>
+	Type your sentence:
+	<form action="/generate" method="POST" id="predict-form">
+		<input type="text" name="sentence" id="sentence" {% if sentence %} value="{{sentence}}" {% endif %}>
+		<button>Predict</button>
+	</form>
+	{% if sentence %}
+	<h3>You typed: {{sentence}}</h3>
+	<h2>Possible next words:</h2>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Word</th>
+				<th>Frequency Count</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for word_count in word_counts %}
+			<tr>
+				<td>{{ loop.index }}</td>
+				<td><a href="#" onclick="affixPrediction('{{ word_count[0] }}'); return false;" class="next-word">{{
+						word_count[0] }}</a></td>
+				<td>{{ word_count[1] }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% endif %}
+</body>
+
+</html>
